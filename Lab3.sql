@@ -7,14 +7,13 @@ CREATE TABLE painter (
     full_name VARCHAR(60) NOT NULL,
     country VARCHAR(60) NOT NULL,
     birth_date DATE NOT NULL
-
 );
 
 CREATE TABLE hall (
- id_hall INT AUTO_INCREMENT PRIMARY KEY, 
- name_ VARCHAR(50) NOT NULL,
- floor_ INT NOT NULL,
- capacity INT NOT NULL
+    id_hall INT AUTO_INCREMENT PRIMARY KEY, 
+    name_ VARCHAR(50) NOT NULL,
+    floor_ INT NOT NULL,
+    capacity INT NOT NULL
 );
 
 CREATE TABLE worker (
@@ -41,7 +40,6 @@ CREATE TABLE exhibition (
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
     id_hall INT NOT NULL 
-
 );
 
 CREATE TABLE visitor (
@@ -60,49 +58,65 @@ CREATE TABLE ticket (
     id_worker INT NOT NULL
 );
 
--- 1. Картина посилається на художника
+
+CREATE TABLE picture_archive (
+    id_picture INT NOT NULL,
+    name_picture VARCHAR(100) NOT NULL,
+    archive_date DATE NOT NULL,
+    PRIMARY KEY (id_picture)
+);
+
+
+CREATE TABLE worker_bonus (
+    id_worker INT NOT NULL,
+    bonus_amount INT NOT NULL,
+    PRIMARY KEY (id_worker, bonus_amount)
+);
+
+
+CREATE TABLE hall_region (
+    id_hall INT NOT NULL,
+    region_id INT NOT NULL,
+    PRIMARY KEY (id_hall, region_id)
+);
+
+-- Зв'язки (Зовнішні ключі)
 ALTER TABLE picture
     ADD CONSTRAINT fk_picture_painter
     FOREIGN KEY (id_painter) REFERENCES painter(id_painter)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
--- 2. Картина посилається на виставку 
 ALTER TABLE picture 
     ADD CONSTRAINT fk_picture_exhibition 
     FOREIGN KEY(id_exhibition) REFERENCES exhibition(id_exhibition)
     ON UPDATE CASCADE ON DELETE RESTRICT;
   
--- 3. Виставка посилається на зал 
 ALTER TABLE exhibition
     ADD CONSTRAINT fk_exhibition_hall
     FOREIGN KEY (id_hall) REFERENCES hall(id_hall)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
--- 4. Квиток посилається на відвідувача
 ALTER TABLE ticket 
     ADD CONSTRAINT fk_ticket_visitor
     FOREIGN KEY(id_visitor) REFERENCES visitor(id_visitor)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
--- 5. Працівник посилається на зал
 ALTER TABLE worker 
     ADD CONSTRAINT fk_worker_hall
     FOREIGN KEY(id_hall) REFERENCES hall(id_hall)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
--- 6. Квиток посилається на виставку
 ALTER TABLE ticket
     ADD CONSTRAINT fk_ticket_exhibition
     FOREIGN KEY (id_exhibition) REFERENCES exhibition(id_exhibition)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
--- 7. Квиток посилається на працівника
 ALTER TABLE ticket
     ADD CONSTRAINT fk_ticket_worker
     FOREIGN KEY (id_worker) REFERENCES worker(id_worker)
     ON UPDATE CASCADE ON DELETE RESTRICT;
  
-
+-- Наповнення даними
 INSERT INTO painter (id_painter, full_name, country, birth_date) VALUES
 (1, 'Тарас Шевченко', 'Україна', '1814-03-09'),
 (2, 'Казимир Малевич', 'Україна', '1879-02-23'),
@@ -114,7 +128,6 @@ INSERT INTO painter (id_painter, full_name, country, birth_date) VALUES
 (8, 'Сальвадор Далі', 'Іспанія', '1904-05-11'),
 (9, 'Леонардо да Вінчі', 'Італія', '1452-04-15'),
 (10, 'Густав Клімт', 'Австрія', '1862-07-14');
-
 
 INSERT INTO hall (id_hall, name_, floor_, capacity) VALUES
 (1, 'Зала Ренесансу', 1, 60),
@@ -164,7 +177,6 @@ INSERT INTO exhibition (id_exhibition, name_exhibition, description, start_date,
 (9, 'Лінії Долі', 'Академічний малюнок та офорти', '2026-09-15 10:00:00', '2026-11-15 18:00:00', 9),
 (10, 'Шедеври Води', 'Французький імпресіонізм у всій красі', '2026-10-01 10:00:00', '2026-12-31 18:00:00', 10);
 
-
 INSERT INTO picture (id_picture, name_picture, price_picture, creation_year, id_painter, id_exhibition) VALUES
 (1, 'Катерина', 150000, 1840, 1, 7),
 (2, 'Чорний квадрат', 500000, 1915, 2, 1),
@@ -177,7 +189,6 @@ INSERT INTO picture (id_picture, name_picture, price_picture, creation_year, id_
 (9, 'Мона Ліза', 1200000, 1503, 9, 4),
 (10, 'Поцілунок', 480000, 1908, 10, 5);
 
-
 INSERT INTO ticket (id_ticket, price_ticket, date_ticket, id_exhibition, id_visitor, id_worker) VALUES
 (1, 150, '2026-02-10 12:30:00', 1, 1, 3),
 (2, 200, '2026-02-12 14:15:00', 2, 2, 3),
@@ -189,8 +200,3 @@ INSERT INTO ticket (id_ticket, price_ticket, date_ticket, id_exhibition, id_visi
 (8, 160, '2026-08-05 10:40:00', 8, 8, 8),
 (9, 140, '2026-09-20 12:00:00', 9, 9, 3),
 (10, 220, '2026-10-10 18:30:00', 10, 10, 8);
-
-
-
-
-

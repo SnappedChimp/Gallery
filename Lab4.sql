@@ -17,6 +17,10 @@ SELECT name_visitor, email_visitor
 FROM visitor 
 WHERE phone_visitor IS NOT NULL;
 
+SELECT * 
+FROM ticket 
+WHERE price_ticket < 200;
+
 -- Завдання 2.
 
 SELECT name_picture 
